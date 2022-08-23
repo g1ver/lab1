@@ -20,12 +20,20 @@ using namespace std;
 
 //some structures
 
+struct Color {
+	uint r;
+	uint g;
+	uint b;
+};
+
 class Global {
 public:
-	int xres, yres;
+	int xres, yres, xmax;
 	float w;
 	float dir;
 	float pos[2];
+	Color boxDefaultColor;
+	Color boxFastColor;
 	Global();
 } g;
 
@@ -51,8 +59,8 @@ public:
 void init_opengl(void);
 void physics(void);
 void render(void);
-
-
+Color adjustColor(void);
+int changeScaling(int, int, int, int, int);
 
 //=====================================
 // MAIN FUNCTION IS HERE
@@ -80,7 +88,10 @@ int main()
 
 Global::Global()
 {
+	boxDefaultColor = {150, 160, 220}; // gordon default blue
+	boxFastColor = {0xff, 0, 0}; // red 
 	xres = 400;
+	xmax = xres + 1000;
 	yres = 200;
 	w = 20.0f;
 	dir = 25.0f;
@@ -264,7 +275,8 @@ void render()
 	glClear(GL_COLOR_BUFFER_BIT);
 	//Draw box.
 	glPushMatrix();
-	glColor3ub(150, 160, 220);
+	Color currColor = adjustColor();
+	glColor3ub(currColor.r, currColor.g, currColor.b);
 	glTranslatef(g.pos[0], g.pos[1], 0.0f);
 	glBegin(GL_QUADS);
 		glVertex2f(-g.w, -g.w);
@@ -275,9 +287,22 @@ void render()
 	glPopMatrix();
 }
 
-void adjustColor(int x) {
-	// more red when moving fast
-	// more blue when moving slow
+int changeScaling(int colorVal, int low, int high, int newLow, int newHigh) 
+{
+  return newLow + (colorVal - low) * (newHigh - newLow) / (high - low);
+}
+
+Color adjustColor() 
+{
+	if (g.xres >= g.xmax) return g.boxDefaultColor;
+
+	// 50 horizontal pixels is when color becomes g.boxFastColor
+
+	uint red = changeScaling(g.xres, 50, g.xmax, g.boxFastColor.r, g.boxDefaultColor.r);
+	uint green = changeScaling(g.xres, 50, g.xmax, g.boxFastColor.g, g.boxDefaultColor.g);
+	uint blue = changeScaling(g.xres, 50, g.xmax, g.boxFastColor.b, g.boxDefaultColor.b);
+
+	return Color {red, green, blue};
 }
 
 
