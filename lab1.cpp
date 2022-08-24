@@ -300,7 +300,7 @@ Color adjustColor()
 	// no gradient until a certain window size
 	if (g.xres >= g.xmax) return g.boxDefaultColor;
 
-	// g.w * 2 horizontal pixels is when color becomes g.boxFastColor
+	// gradient from default color to fast color based upon window size
 	uint red = changeScaling(g.xres, g.w * 2, g.xmax, g.boxFastColor.r, g.boxDefaultColor.r);
 	uint green = changeScaling(g.xres, g.w * 2, g.xmax, g.boxFastColor.g, g.boxDefaultColor.g);
 	uint blue = changeScaling(g.xres, g.w * 2, g.xmax, g.boxFastColor.b, g.boxDefaultColor.b);
