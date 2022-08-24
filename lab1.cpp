@@ -297,7 +297,7 @@ Color adjustColor()
 	// turn fast color when colliding with wall
 	if (g.pos[0] >= (g.xres-g.w) || g.pos[0] <= g.w) return g.boxFastColor;
 
-	// no gradient until a certain distance
+	// no gradient until a certain window size
 	if (g.xres >= g.xmax) return g.boxDefaultColor;
 
 	// g.w * 2 horizontal pixels is when color becomes g.boxFastColor
