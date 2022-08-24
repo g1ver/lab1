@@ -294,13 +294,16 @@ int changeScaling(int colorVal, int low, int high, int newLow, int newHigh)
 
 Color adjustColor() 
 {
+	// turn fast color when colliding with wall
+	if (g.pos[0] >= (g.xres-g.w) || g.pos[0] <= g.w) return g.boxFastColor;
+
+	// no gradient until a certain distance
 	if (g.xres >= g.xmax) return g.boxDefaultColor;
 
-	// 50 horizontal pixels is when color becomes g.boxFastColor
-
-	uint red = changeScaling(g.xres, 50, g.xmax, g.boxFastColor.r, g.boxDefaultColor.r);
-	uint green = changeScaling(g.xres, 50, g.xmax, g.boxFastColor.g, g.boxDefaultColor.g);
-	uint blue = changeScaling(g.xres, 50, g.xmax, g.boxFastColor.b, g.boxDefaultColor.b);
+	// g.w * 2 horizontal pixels is when color becomes g.boxFastColor
+	uint red = changeScaling(g.xres, g.w * 2, g.xmax, g.boxFastColor.r, g.boxDefaultColor.r);
+	uint green = changeScaling(g.xres, g.w * 2, g.xmax, g.boxFastColor.g, g.boxDefaultColor.g);
+	uint blue = changeScaling(g.xres, g.w * 2, g.xmax, g.boxFastColor.b, g.boxDefaultColor.b);
 
 	return Color {red, green, blue};
 }
