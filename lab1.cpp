@@ -18,14 +18,18 @@ using namespace std;
 #include <GL/glx.h>
 
 
-//some structures
-
+// modifications
 struct Color {
 	uint r;
 	uint g;
 	uint b;
 };
 
+int changeScaling(int, int, int, int, int);
+Color colorCycle(void);
+Color findGradient(int, int, int, Color, Color);
+
+//some structures
 class Global {
 public:
 	int xres, yres, xmax;
@@ -59,8 +63,6 @@ public:
 void init_opengl(void);
 void physics(void);
 void render(void);
-Color adjustColor(void);
-int changeScaling(int, int, int, int, int);
 
 //=====================================
 // MAIN FUNCTION IS HERE
@@ -88,10 +90,10 @@ int main()
 
 Global::Global()
 {
-	boxDefaultColor = {150, 160, 220}; // gordon default blue
+	boxDefaultColor = {160, 150, 220}; // gordon's default blue
 	boxFastColor = {0xff, 0, 0}; // red 
 	xres = 400;
-	xmax = xres + 1000;
+	xmax = g.xres + 250;
 	yres = 200;
 	w = 20.0f;
 	dir = 25.0f;
@@ -166,6 +168,7 @@ void X11_wrapper::reshape_window(int width, int height)
 	//window has been resized.
 	g.xres = width;
 	g.yres = height;
+	g.xmax = g.xres + 250;
 	//
 	glViewport(0, 0, (GLint)width, (GLint)height);
 	glMatrixMode(GL_PROJECTION); glLoadIdentity();
@@ -275,7 +278,7 @@ void render()
 	glClear(GL_COLOR_BUFFER_BIT);
 	//Draw box.
 	glPushMatrix();
-	Color currColor = adjustColor();
+	Color currColor = colorCycle();
 	glColor3ub(currColor.r, currColor.g, currColor.b);
 	glTranslatef(g.pos[0], g.pos[1], 0.0f);
 	glBegin(GL_QUADS);
@@ -287,28 +290,39 @@ void render()
 	glPopMatrix();
 }
 
-int changeScaling(int colorVal, int low, int high, int newLow, int newHigh) 
+int changeScaling(int base, int low, int high, int newLow, int newHigh) 
 {
-  return newLow + (colorVal - low) * (newHigh - newLow) / (high - low);
+  return newLow + (base - low) * (newHigh - newLow) / (high - low);
 }
 
-Color adjustColor() 
+Color findGradient(int winSize, int lowerBound, int higherBound, Color a, Color b) 
 {
-	// turn fast color when colliding with wall
-	if (g.pos[0] >= (g.xres-g.w) || g.pos[0] <= g.w) return g.boxFastColor;
-
-	// no gradient until a certain window size
-	if (g.xres >= g.xmax) return g.boxDefaultColor;
-
-	// gradient from default color to fast color based upon window size
-	uint red = changeScaling(g.xres, g.w * 2, g.xmax, g.boxFastColor.r, g.boxDefaultColor.r);
-	uint green = changeScaling(g.xres, g.w * 2, g.xmax, g.boxFastColor.g, g.boxDefaultColor.g);
-	uint blue = changeScaling(g.xres, g.w * 2, g.xmax, g.boxFastColor.b, g.boxDefaultColor.b);
-
-	return Color {red, green, blue};
+	// lower window size            higher window size
+	//      more color a   <---->   more color b
+	Color c;
+	c.r = changeScaling(winSize, lowerBound, higherBound, a.r, b.r);
+	c.g = changeScaling(winSize, lowerBound, higherBound, a.g, b.b);
+	c.b = changeScaling(winSize, lowerBound, higherBound, a.g, b.b);
+	return c;
 }
 
+/**
+ *  			  Diagram of gradient locations
+ * 
+ * 		           g.w*3				 	 g.xres-(g.w*3)
+ *	0		       |				     	 |               g.xres
+ *	|-adjustedFast-|-------baseGradient------|-adjustedFast--|
+ *
+*/
+Color colorCycle() 
+{
+	int baseGradientLB = g.w * 3;
+	int baseGradientHB = g.xres - g.w * 3;
 
-
-
-
+	Color adjustedFast = findGradient(g.xres, g.w, g.xmax, g.boxFastColor, g.boxDefaultColor);
+	Color baseGradient = findGradient(g.xres, g.w, g.xmax, adjustedFast, g.boxDefaultColor);
+	if (baseGradientLB < g.pos[0] && g.pos[0] < baseGradientHB)
+		return baseGradient;
+	else
+		return adjustedFast;
+}
