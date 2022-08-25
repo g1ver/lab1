@@ -93,7 +93,7 @@ Global::Global()
 	boxDefaultColor = {160, 150, 220}; // gordon's default blue
 	boxFastColor = {0xff, 0, 0}; // red 
 	xres = 400;
-	xmax = g.xres + 250;
+	xmax = g.xres + 500;
 	yres = 200;
 	w = 20.0f;
 	dir = 25.0f;
@@ -168,7 +168,7 @@ void X11_wrapper::reshape_window(int width, int height)
 	//window has been resized.
 	g.xres = width;
 	g.yres = height;
-	g.xmax = g.xres + 250;
+	g.xmax = g.xres + 500; // causes gradient to become less intense when window becomes larger
 	//
 	glViewport(0, 0, (GLint)width, (GLint)height);
 	glMatrixMode(GL_PROJECTION); glLoadIdentity();
