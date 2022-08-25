@@ -317,7 +317,7 @@ Color findGradient(int winSize, int lowerBound, int higherBound, Color a, Color 
 Color colorCycle() 
 {
 	int baseGradientLB = g.w * 3;
-	int baseGradientHB = g.xres - g.w * 3;
+	int baseGradientHB = g.xres - baseGradientLB;
 
 	Color adjustedFast = findGradient(g.xres, g.w, g.xmax, g.boxFastColor, g.boxDefaultColor);
 	Color baseGradient = findGradient(g.xres, g.w, g.xmax, adjustedFast, g.boxDefaultColor);
