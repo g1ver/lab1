@@ -309,8 +309,8 @@ Color findGradient(int winSize, int lowerBound, int higherBound, Color a, Color 
 /**
  *  			  Diagram of gradient locations
  * 
- * 		           g.w*3				 	 g.xres-(g.w*3)
- *	0		       |				     	 |               g.xres
+ *                 g.w*3                     g.xres-(g.w*3)
+ *	0              |                         |               g.xres
  *	|-adjustedFast-|-------baseGradient------|-adjustedFast--|
  *
 */
