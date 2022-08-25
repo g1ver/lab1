@@ -292,7 +292,7 @@ void render()
 
 int changeScaling(int base, int low, int high, int newLow, int newHigh) 
 {
-  return newLow + (base - low) * (newHigh - newLow) / (high - low);
+	return newLow + (base - low) * (newHigh - newLow) / (high - low);
 }
 
 Color findGradient(int winSize, int lowerBound, int higherBound, Color a, Color b) 
@@ -309,7 +309,7 @@ Color findGradient(int winSize, int lowerBound, int higherBound, Color a, Color 
 /**
  *  			  Diagram of gradient locations
  * 
- *                 g.w*3                     g.xres-(g.w*3)
+ *                  g.w*3                     g.xres-(g.w*3)
  *	0              |                         |               g.xres
  *	|-adjustedFast-|-------baseGradient------|-adjustedFast--|
  *
