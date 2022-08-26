@@ -26,7 +26,7 @@ struct Color {
 };
 
 int changeScaling(int, int, int, int, int);
-Color colorCycle(void);
+void colorCycle(void);
 Color findGradient(int, int, int, Color, Color);
 
 //some structures
@@ -38,6 +38,7 @@ public:
 	float pos[2];
 	Color boxDefaultColor;
 	Color boxFastColor;
+	Color currentBoxColor;
 	Global();
 } g;
 
@@ -92,6 +93,7 @@ Global::Global()
 {
 	boxDefaultColor = {160, 150, 220}; // gordon's default blue
 	boxFastColor = {0xff, 0, 0}; // red 
+	currentBoxColor = boxDefaultColor;
 	xres = 400;
 	xmax = g.xres + 500;
 	yres = 200;
@@ -280,9 +282,10 @@ void render()
 	glPushMatrix();
 	glTranslatef(g.pos[0], g.pos[1], 0.0f);
 
+	// stop draw on small window size
 	if (g.xres > g.w) {
-		Color currColor = colorCycle();
-		glColor3ub(currColor.r, currColor.g, currColor.b);
+		colorCycle();
+		glColor3ub(g.currentBoxColor.r, g.currentBoxColor.g, g.currentBoxColor.b);
 		glBegin(GL_QUADS);
 			glVertex2f(-g.w, -g.w);
 			glVertex2f(-g.w,  g.w);
@@ -317,7 +320,7 @@ Color findGradient(int winSize, int lowerBound, int higherBound, Color a, Color 
  *	|-adjustedFast-|-------baseGradient------|-adjustedFast--|
  *
 */
-Color colorCycle() 
+void colorCycle() 
 {
 	int baseGradientLB = g.w * 3;
 	int baseGradientHB = g.xres - baseGradientLB;
@@ -325,7 +328,7 @@ Color colorCycle()
 	Color adjustedFast = findGradient(g.xres, g.w, g.xmax, g.boxFastColor, g.boxDefaultColor);
 	Color baseGradient = findGradient(g.xres, g.w, g.xmax, adjustedFast, g.boxDefaultColor);
 	if (baseGradientLB < g.pos[0] && g.pos[0] < baseGradientHB)
-		return baseGradient;
+		g.currentBoxColor = baseGradient;
 	else
-		return adjustedFast;
+		g.currentBoxColor = adjustedFast;
 }
