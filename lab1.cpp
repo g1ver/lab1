@@ -281,6 +281,8 @@ void render()
 	Color currColor = colorCycle();
 	glColor3ub(currColor.r, currColor.g, currColor.b);
 	glTranslatef(g.pos[0], g.pos[1], 0.0f);
+
+	if (g.xres < g.w) return;
 	glBegin(GL_QUADS);
 		glVertex2f(-g.w, -g.w);
 		glVertex2f(-g.w,  g.w);
