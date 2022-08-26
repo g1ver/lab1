@@ -278,11 +278,11 @@ void render()
 	glClear(GL_COLOR_BUFFER_BIT);
 	//Draw box.
 	glPushMatrix();
-	Color currColor = colorCycle();
-	glColor3ub(currColor.r, currColor.g, currColor.b);
 	glTranslatef(g.pos[0], g.pos[1], 0.0f);
 
 	if (g.xres > g.w) {
+		Color currColor = colorCycle();
+		glColor3ub(currColor.r, currColor.g, currColor.b);
 		glBegin(GL_QUADS);
 			glVertex2f(-g.w, -g.w);
 			glVertex2f(-g.w,  g.w);
