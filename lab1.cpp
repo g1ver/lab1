@@ -282,8 +282,8 @@ void render()
 	glPushMatrix();
 	glTranslatef(g.pos[0], g.pos[1], 0.0f);
 
-	// stop draw on small window size
-	if (g.xres > g.w) {
+	// draw only when box can fit in window
+	if (g.xres >= g.w * 2) {
 		colorCycle();
 		glColor3ub(g.currentBoxColor.r, g.currentBoxColor.g, g.currentBoxColor.b);
 		glBegin(GL_QUADS);
